@@ -93,7 +93,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.addMarker(new MarkerOptions().position(latLng).title("New Place"));
                 Toast t;
                 t=Toast.makeText(MapsActivity.this,latLng.toString(),Toast.LENGTH_LONG);
-                t.setGravity(Gravity.TOP|Gravity.LEFT,10,3);
+                t.setGravity(Gravity.TOP|Gravity.START,10,3);
                 t.show();
             }
         });
@@ -103,3 +103,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 }
+
+
+////SEE I JUST DID THAT
