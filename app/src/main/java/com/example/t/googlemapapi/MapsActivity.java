@@ -3,6 +3,8 @@ package com.example.t.googlemapapi;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Api;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
@@ -23,6 +26,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -38,13 +44,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
     }
 
-    public void runIt(View v){
+    public void runIt(View v) throws IOException {
         hideSoftInput(v);
 
         EditText et=(EditText)findViewById(R.id.et);
         String s=et.getText().toString();
 
-        Toast.makeText(MapsActivity.this,s,Toast.LENGTH_LONG).show();
+        Geocoder gc=new Geocoder(this);
+
+        List<Address> list=gc.getFromLocationName(s,1);
+
+        Address ad=list.get(0);
+
+        String locality=ad.getLocality();
+
+        LatLng l=new LatLng(ad.getLatitude(),ad.getLongitude());
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(l));
+
+
+
+        Toast.makeText(this,locality,Toast.LENGTH_LONG).show();
 
 
     }
@@ -77,15 +97,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         options.mapType(GoogleMap.MAP_TYPE_SATELLITE);
 
 
-//        CameraPosition camPos = new CameraPosition.Builder()
-//                .target(swh) // Sets the center of the map to uni.
-//                .zoom(1) // Sets the zoom
-//                .bearing(90) // Sets the orientation of the camera to east
-//                .tilt(30) // Sets the tilt of the camera to 30 degrees
-//                .build();
-//
-//        // Creates a CameraPosition from the builder
-//        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
+
 
 
 
@@ -104,7 +116,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(swh).title("Suhrawardy Hall"));
        // mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
-        mMap.setPadding(0,0,0,500);
+        //mMap.setPadding(0,0,0,500);
 
 
 ////
@@ -114,6 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onMapClick(LatLng latLng) {
                 Log.d("onMapClick", "Latitude:"+latLng.latitude+", longitude:" + latLng.longitude);
                 mMap.addMarker(new MarkerOptions().position(latLng).title("New Place"));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
                 Toast t;
                 t=Toast.makeText(MapsActivity.this,latLng.toString(),Toast.LENGTH_LONG);
                 t.setGravity(Gravity.TOP|Gravity.START,10,3);
@@ -122,7 +135,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
 
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(swh));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(swh,15));
 
     }
 }
