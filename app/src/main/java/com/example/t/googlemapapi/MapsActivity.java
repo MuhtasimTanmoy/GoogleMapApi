@@ -8,6 +8,10 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
+import android.view.inputmethod.InputMethod;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Api;
@@ -33,6 +37,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
+
+    public void runIt(View v){
+        hideSoftInput(v);
+
+        EditText et=(EditText)findViewById(R.id.et);
+        String s=et.getText().toString();
+
+        Toast.makeText(MapsActivity.this,s,Toast.LENGTH_LONG).show();
+
+
+    }
+
+    private  void hideSoftInput(View v){
+        InputMethodManager imm=(InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(),0);
+    }
+
 
 
     /**
@@ -84,6 +105,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
        // mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
         mMap.setPadding(0,0,0,500);
+
+
 ////
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
